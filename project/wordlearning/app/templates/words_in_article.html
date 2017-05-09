@@ -1,7 +1,5 @@
-<div class="container">
-    <h1 class="page-header">Words</h1>
-    <form action="/view/words" method="get" class="form-horizontal" role="form">
-        <input type="hidden" name="id" value="{{ id }}"/>
-        {% include './common/words_table.html' %}
-    </form>
-</div>
+<h1 class="page-header">Words</h1>
+<form action="/view/words" method="get" class="form-horizontal" role="form">
+    <input type="hidden" name="id" value="{{ id }}"/>
+    {% include './common/words_table.html' %}
+</form>
