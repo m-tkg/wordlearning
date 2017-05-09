@@ -1,0 +1,4 @@
+DOCKER_REGISTRY=""
+REPOSITRY=""
+IMAGE_NAME="dev"
+IMAGE_LOCAL="dev-build"
