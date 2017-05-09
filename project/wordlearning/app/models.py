@@ -11,10 +11,10 @@ class Article(models.Model):
 
 class Word(models.Model):
     status_list = (
-        ('master', 'master'),
-        ('studying', 'studying'),
-        ('not started', 'not started'),
-        ('ignore', 'ignore')
+        ('master', 'success'),
+        ('studying', 'info'),
+        ('not started', 'danger'),
+        ('ignore', 'default')
     )
     word = models.CharField(verbose_name='Word', max_length=255, unique=True)
     status = models.CharField(verbose_name='Status', choices=status_list, max_length=16)

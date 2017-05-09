@@ -71,6 +71,17 @@ def articles_delete(request):
 
 
 def words_list(request):
+    if request.method == 'POST':
+        status = request.POST.get('change_status')
+        for id in request.POST.getlist('check'):
+            word = Word.objects.get(id=id)
+            word.status = status
+            word.save()
+        count_str = ''
+        if "count" in request.POST:
+            count_str = "?count=" + request.POST.get("count")
+        return redirect(request.path + count_str)
+
     wordcount = WordCount.objects.values('word').annotate(cnt=Sum('count'))
     wordlist = Word.objects.all()
     count = 0
@@ -84,6 +95,7 @@ def words_list(request):
     for w in wordlist:
         if w.id in wordscnt and wordscnt[w.id] >= count:
             word = {}
+            word['id'] = w.id
             word['word'] = w.word
             word['cnt'] = wordscnt[w.id]
             word['status'] = w.status
@@ -91,12 +103,29 @@ def words_list(request):
             if word['cnt'] > max:
                 max = word['cnt']
     words = sorted(words, key=lambda x: x['cnt'], reverse=True)
+    wordstatus = Word().status_list
 
-    context = {'words': words, 'count': count, 'max': max, 'active_words': True, 'template': 'words_list.html'}
+    context = {
+        'words': words,
+        'wordstatus': wordstatus,
+        'count': count,
+        'max': max,
+        'active_words': True,
+        'template': 'words_list.html'
+        }
     return render(request, './common/base.html', context)
 
 
 def words_view(request):
+    if request.method == 'POST':
+        status = request.POST.get('change_status')
+        for id in request.POST.getlist('check'):
+            word = Word.objects.get(id=id)
+            word.status = status
+            word.save()
+        count_str = "?id=" + request.POST.get("id") + "&count=" + request.POST.get("count")
+        return redirect(request.path + count_str)
+
     if "id" not in request.GET:
         return redirect("app:articles_list")
     wordcount = WordCount.objects.select_related().filter(article_id=request.GET.get("id"))
@@ -108,6 +137,7 @@ def words_view(request):
     for w in wordcount:
         if w.count >= count:
             word = {}
+            word['id'] = w.word.id
             word['word'] = w.word.word
             word['cnt'] = w.count
             word['status'] = w.word.status
@@ -116,5 +146,14 @@ def words_view(request):
                 max = word['cnt']
     words = sorted(words, key=lambda x: x['cnt'], reverse=True)
 
-    context = {'words': words, 'count': count, 'id': request.GET.get("id"), 'max': max, 'active_wordsinarticle': True, 'template': 'words_in_article.html'}
+    wordstatus = Word().status_list
+    context = {
+        'words': words,
+        'wordstatus': wordstatus,
+        'count': count,
+        'id': request.GET.get("id"),
+        'max': max,
+        'active_wordsinarticle': True,
+        'template': 'words_in_article.html'
+        }
     return render(request, './common/base.html', context)
