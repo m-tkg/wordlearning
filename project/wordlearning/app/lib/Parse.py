@@ -6,6 +6,7 @@ from datetime import datetime as dt
 import re
 from collections import Counter
 from readability.readability import Document
+from nltk.corpus import wordnet as wn
 
 
 class Parse:
@@ -29,10 +30,16 @@ class Parse:
         text_simple = text.lower()
         text_simple = re.sub(r'[^a-z\'\-]', ' ', text_simple)
         words = re.split(r' ', text_simple)
+        words_new = {}
         for i in range(len(words)):
             words[i] = re.sub(r'^\'', '', words[i])
             words[i] = re.sub(r'\'$', '', words[i])
             words[i] = re.sub(r'\'s$', '', words[i])
+            word = wn.morphy(words[i])
+            if word is None:
+                word = ''
+            words[i] = word
+
         counter = Counter(words)
         result = {}
         for word, count in counter.most_common():
