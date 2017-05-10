@@ -3,9 +3,7 @@ ENV HOME /
 RUN yum -y update
 RUN yum -y install epel-release 
 RUN yum -y groupinstall "Development Tools" "Compatibility Libraries"
-RUN yum -y install git curl bzip2 bzip2-devel gcc make openssl-devel readline-devel zlib-devel rpmdevtools yum-utils libevent-devel mysql-devel openldap-devel vim sqlite-devel
-RUN yum -y install cronie
-RUN yum -y install mysql-server
+RUN yum -y install git curl bzip2 bzip2-devel gcc make openssl-devel readline-devel zlib-devel rpmdevtools yum-utils libevent-devel mysql-devel openldap-devel vim sqlite-devel mysql-server
 
 WORKDIR /root/
 RUN git clone https://github.com/tagomoris/xbuild.git
