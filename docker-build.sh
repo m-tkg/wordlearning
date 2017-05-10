@@ -8,4 +8,4 @@ cd $ROOTDIR
 
 docker ps -a | grep -q ${IMAGE_LOCAL}-work && docker rm ${IMAGE_LOCAL}-work || true
 docker images | grep -q ${IMAGE_LOCAL} && docker rmi ${IMAGE_LOCAL} || true
-docker build -t ${IMAGE_LOCAL} ./
+docker build -t ${IMAGE_LOCAL} $@ ./
