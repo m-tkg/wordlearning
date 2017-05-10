@@ -1,4 +1,4 @@
 __pycache__/
+mysql/*
 *.py[cod]
 *$py.class
-
