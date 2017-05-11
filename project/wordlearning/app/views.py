@@ -8,6 +8,10 @@ import urllib.parse
 from django.db.models.aggregates import Sum
 
 
+def index(request):
+    return redirect("app:articles_list")
+
+
 def articles_list(request):
     articles = Article.objects.all().order_by('id')
     form = ArticleForm(instance=Article())
