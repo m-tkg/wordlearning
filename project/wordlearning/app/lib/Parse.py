@@ -83,6 +83,8 @@ class Parse:
             for phrase in phrasetag.findAll('a'):
                 name = phrase.text
                 (value, dummy) = Parse.weblioMeaning(phrase['href'])
+                if len(phrases) >= 10:
+                    break
                 phrases.append({'text': name, 'meaning': value})
         result['phrases'] = phrases
 
@@ -106,7 +108,7 @@ class Parse:
                     japanese = tag.text
                     if len(english) < 256 and len(japanese) < 256:
                         examples.append({'text': english, 'meaning': japanese})
-                        if len(examples) > 10:
+                        if len(examples) >= 10:
                             break
                 except:
                     pass
