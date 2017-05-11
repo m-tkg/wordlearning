@@ -2,6 +2,10 @@ from django.shortcuts import redirect, render
 from app.models import Article
 from app.models import Word
 from app.models import WordCount
+from app.models import WordPhrase
+from app.models import Phrase
+from app.models import Example
+from app.models import WordExample
 from app.forms import ArticleForm
 from app.lib.Parse import Parse
 import urllib.parse
@@ -161,3 +165,37 @@ def words_view(request):
         'template': 'words_in_article.html'
         }
     return render(request, './common/base.html', context)
+
+
+def weblio(request):
+    words = Word.objects.filter(meaning='')
+    for word in words:
+        result = Parse.weblioWord(word.word)
+        word.meaning = result['meaning']
+        word.imageurl = result['imageurl']
+        word.save()
+        for phrase in result['phrases']:
+            try:
+                Phrase.objects.get(phrase=phrase['text'])
+            except:
+                new_phrase = Phrase()
+                new_phrase.phrase = phrase['text']
+                new_phrase.meaning = phrase['meaning']
+                new_phrase.save()
+                wordphrase = WordPhrase()
+                wordphrase.word = word
+                wordphrase.phrase = new_phrase
+                wordphrase.save()
+        for example in result['examples']:
+            try:
+                Example.objects.get(phrase=example['text'])
+            except:
+                new_example = Example()
+                new_example.sentence = example['text']
+                new_example.meaning = example['meaning']
+                new_example.save()
+                wordexample = WordExample()
+                wordexample.word = word
+                wordexample.example = new_example
+                wordexample.save()
+    return render(request, './ok.html')

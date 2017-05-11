@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^delete/article$', views.articles_delete, name='articles_delete'),
     url(r'^words$', views.words_list, name='words_list'),
     url(r'^view/words$', views.words_view, name='words_view'),
+    url(r'^parse/weblio$', views.weblio, name='weblio'),
 ]

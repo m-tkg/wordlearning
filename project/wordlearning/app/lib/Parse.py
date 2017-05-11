@@ -45,3 +45,68 @@ class Parse:
             if len(word) >= 4:
                 result[word] = count
         return result
+
+    @staticmethod
+    def weblioMeaning(url):
+        htmlfp = urllib.request.urlopen(url)
+        html = htmlfp.read().decode('utf-8', 'replace')
+        htmlfp.close()
+        s = BeautifulSoup(html, 'lxml')
+
+        # meaning and image
+        meaning = ''
+        imageurl = ''
+        meaningtag = s.find('td', class_='content-explanation')
+        imagetag = s.find('div', class_='summaryM EGateCoreDataWrp')
+        if meaningtag is not None:
+            meaning = meaningtag.text
+        if imagetag is not None and imagetag.find('img') is not None:
+            imageurl = imagetag.find('img')['src']
+        return(meaning, imageurl)
+
+    @staticmethod
+    def weblioWord(word):
+        result = {}
+        # word
+        (meaning, imageurl) = Parse.weblioMeaning('http://ejje.weblio.jp/content/' + word)
+        result['meaning'] = meaning
+        result['imageurl'] = imageurl
+
+        # phrase
+        htmlfp = urllib.request.urlopen('http://ejje.weblio.jp/phrase/kenej/' + word)
+        html = htmlfp.read().decode('utf-8', 'replace')
+        htmlfp.close()
+        s = BeautifulSoup(html, 'lxml')
+        phrasetag = s.find('div', class_='phraseWords')
+        phrases = []
+        if phrasetag is not None:
+            for phrase in phrasetag.findAll('a'):
+                name = phrase.text
+                (value, dummy) = Parse.weblioMeaning(phrase['href'])
+                phrases.append({'text': name, 'meaning': value})
+        result['phrases'] = phrases
+
+        # example
+        htmlfp = urllib.request.urlopen('http://ejje.weblio.jp/sentence/content/' + word)
+        html = htmlfp.read().decode('utf-8', 'replace')
+        htmlfp.close()
+        s = BeautifulSoup(html, 'lxml')
+        exampletag = s.findAll(class_='qotC')
+        examples = []
+        if exampletag is not None:
+            for example in exampletag:
+                try:
+                    tag = example.find(class_='qotCE')
+                    tag.find('span').extract()
+                    tag.find('audio').extract()
+                    tag.find('i').extract()
+                    english = tag.text
+                    tag = s.findAll(class_='qotC')[0].find(class_='qotCJ')
+                    tag.find('span').extract()
+                    japanese = tag.text
+                    examples.append({'text': english, 'meaning': japanese})
+                except:
+                    pass
+        result['examples'] = examples
+
+        return result
