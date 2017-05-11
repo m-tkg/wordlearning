@@ -9,6 +9,7 @@ retry() {
   until [ $n -ge ${MAX_RETRY} ]
   do
     "${@}" >>${LOGFILE} 2>&1 && break
+    echo "retrying...: ${@}" >>${LOGFILE} 2>&1
     n=$[${n}+1]
     sleep 1
   done
@@ -19,6 +20,6 @@ retry() {
 }
 
 touch ${LOGFILE}
-retry python ${ROOTDIR}/wordlearning/manage.py makemigrations
+retry python ${ROOTDIR}/wordlearning/manage.py makemigrations app
 retry python ${ROOTDIR}/wordlearning/manage.py migrate
 retry python ${ROOTDIR}/wordlearning/manage.py runserver 0.0.0.0:8080
