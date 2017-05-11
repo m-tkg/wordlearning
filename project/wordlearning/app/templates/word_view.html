@@ -14,14 +14,16 @@ function expand(ctrl){
 
 <h3 class="page-header">{{ word.word }}</h3>
 
+{% if word %}
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="expand('word-meaning')">
         <h3 class="panel-title">意味&nbsp;<span class="glyphicon glyphicon-chevron-right word-meaning-button"></span></h3>
     </div>
-    <div class="panel-body word-meaning" hidden>
-        {{ word.meaning }}
+    <div class="panel-body">
+        <span class="word-meaning" hidden>{{ word.meaning }}</span>
     </div>
 </div>
+{% endif %}
 
 <div class="panel panel-primary">
     <div class="panel-heading">
@@ -39,6 +41,7 @@ function expand(ctrl){
     </div>
 </div>
 
+{% if examples %}
 <div class="panel panel-primary">
     <div class="panel-heading">
         <h3 class="panel-title" onclick="expand('example-meaning')">例文&nbsp;<span class="glyphicon glyphicon-chevron-right example-meaning-button"></span></h3>
@@ -52,3 +55,4 @@ function expand(ctrl){
         {% endfor %}
     </div>
 </div>
+{% endif %}
