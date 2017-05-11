@@ -1,29 +1,32 @@
 <h1 class="page-header">Articles</h1>
 <form action="/parse/article" method="post" class="form-horizontal" role="form">
     {% csrf_token %}
-    {{form}}
-    <button type="submit" class="btn btn-primary">Parse</button>
+      <div class="input-group">
+        <span class="input-group-addon">URL</span>
+        <input type="text" class="form-control" name='url'>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button">Load</button>
+        </span>
+      </div>
 </form>
-<table class="table table-striped table-bordered">
-
-    <thead>
-        <tr>
-            <td>Date</td>
-            <td>Source</td>
-            <td>Summary</td>
-            <td>Words</td>
-            <td>Del</td>
-    </tr>
-    </thead>
-    <tbody>
-        {% for article in articles %}
-        <tr>
-            <td>{{ article.date }}</td>
-            <td><a href='{{ article.url }}'>{{ article.domain }}</a></td>
-            <td><a href='/articles/view?id={{ article.id }}'>{{ article.title }}</a></td>
-            <td><a href='/articles/words?id={{ article.id }}'>view</a></td>
-            <td><a href='/delete/article?id={{ article.id }}' class="btn btn-danger btn-xs">×</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% for article in articles %}
+<div class="panel panel-warning">
+    <div class="panel-heading">
+        <table style="width: 100%">
+            <tr>
+                <td>
+                    {{ article.date }}
+                    <a href='{{ article.url }}' target="_blank" class="label label-success">{{ article.domain }}&nbsp;<span class="glyphicon glyphicon-new-window"></span></a>
+                </td>
+                <td style="text-align:right">
+                    <a href='/delete/article?id={{ article.id }}' class="btn btn-danger btn-xs glyphicon glyphicon-trash" style="text-align: right;"></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="panel-body">
+        <a href='/articles/words?id={{ article.id }}' class="glyphicon glyphicon-list-alt"></a>
+        <a href='/articles/view?id={{ article.id }}'>{{ article.title }}</a>
+    </div>
+</div>
+{% endfor %}

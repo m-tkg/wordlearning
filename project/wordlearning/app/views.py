@@ -6,7 +6,6 @@ from app.models import WordPhrase
 from app.models import Phrase
 from app.models import Example
 from app.models import WordExample
-from app.forms import ArticleForm
 from app.lib.Parse import Parse
 import urllib.parse
 from django.db.models.aggregates import Sum
@@ -17,9 +16,8 @@ def index(request):
 
 
 def articles(request):
-    articles = Article.objects.all().order_by('id')
-    form = ArticleForm(instance=Article())
-    context = {'form': form, 'articles': articles, 'active_articles': True, 'template': './articles_list.html'}
+    articles = Article.objects.all().order_by('id').reverse()
+    context = {'articles': articles, 'active_articles': True, 'template': './articles_list.html'}
     return render(request, './common/base.html', context)
 
 
