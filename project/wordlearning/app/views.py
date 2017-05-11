@@ -13,7 +13,7 @@ from django.db.models.aggregates import Sum
 
 
 def index(request):
-    return redirect("app:articles_list")
+    return redirect("app:articles")
 
 
 def articles(request):
@@ -25,7 +25,7 @@ def articles(request):
 
 def articlesView(request):
     if "id" not in request.GET:
-        return redirect("app:articles_list")
+        return redirect("app:articles")
     article = Article.objects.get(id=request.GET.get("id"))
     lines = article.body.split('\n')
     context = {'lines': lines, 'active_articles': True, 'template': './articles_view.html'}
@@ -67,15 +67,15 @@ def parseArticle(request):
                 wordcount.count = count[w]
                 wordcount.save()
 
-    return redirect("app:articles_list")
+    return redirect("app:articles")
 
 
 def deleteArticle(request):
     if "id" not in request.GET:
-        return redirect("app:articles_list")
+        return redirect("app:articles")
     Article.objects.get(id=request.GET.get("id")).delete()
     WordCount.objects.filter(article_id=request.GET.get("id")).delete()
-    return redirect("app:articles_list")
+    return redirect("app:articles")
 
 
 def words(request):
@@ -135,7 +135,7 @@ def articleWords(request):
         return redirect(request.path + count_str)
 
     if "id" not in request.GET:
-        return redirect("app:articles_list")
+        return redirect("app:articles")
     wordcount = WordCount.objects.select_related().filter(article_id=request.GET.get("id"))
     count = 0
     if "count" in request.GET:
@@ -163,6 +163,22 @@ def articleWords(request):
         'max': max,
         'active_wordsinarticle': True,
         'template': 'words_in_article.html'
+        }
+    return render(request, './common/base.html', context)
+
+
+def wordsView(request):
+    if "id" not in request.GET:
+        return redirect("app:words")
+    word = Word.objects.get(id=request.GET.get("id"))
+    phrases = WordPhrase.objects.select_related().filter(word=word)
+    examples = WordExample.objects.select_related().filter(word=word)
+    context = {
+        'word': word,
+        'phrases': phrases,
+        'examples': examples,
+        'active_words': True,
+        'template': './word_view.html'
         }
     return render(request, './common/base.html', context)
 

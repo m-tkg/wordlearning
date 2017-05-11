@@ -36,7 +36,7 @@ $(document).ready(function() {
     <tbody>
         {% for word in words %}
         <tr class="check{{word.id}}">
-            <td><input type="checkbox" value="{{word.id}}" id="check{{word.id}}" name="check" style="display: none"/>&nbsp;{{ word.word }}</td>
+            <td><input type="checkbox" value="{{word.id}}" id="check{{word.id}}" name="check" style="display: none"/>&nbsp;<a href="/words/view?id={{ word.id }}">{{ word.word }}</a></td>
             <td>{{ word.cnt }}</td>
             <td>
                 {% for status, label in wordstatus %}

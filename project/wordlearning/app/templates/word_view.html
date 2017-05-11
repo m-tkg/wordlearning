@@ -1,0 +1,54 @@
+<script type="text/javascript">
+function expand(ctrl){
+    if( $('.' + ctrl).is(':hidden') ){
+        $('.' + ctrl).show()
+        $('.' + ctrl + '-button').removeClass('glyphicon-chevron-right')
+        $('.' + ctrl + '-button').addClass('glyphicon-chevron-down')
+    }else{
+        $('.' + ctrl).hide()
+        $('.' + ctrl + '-button').removeClass('glyphicon-chevron-down')
+        $('.' + ctrl + '-button').addClass('glyphicon-chevron-right')
+    }
+}
+</script>
+
+<h3 class="page-header">{{ word.word }}</h3>
+
+<div class="panel panel-primary">
+    <div class="panel-heading" onclick="expand('word-meaning')">
+        <h3 class="panel-title">意味&nbsp;<span class="glyphicon glyphicon-chevron-right word-meaning-button"></span></h3>
+    </div>
+    <div class="panel-body word-meaning" hidden>
+        {{ word.meaning }}
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title" onclick="expand('phrase-meaning')">フレーズ&nbsp;<span class="glyphicon glyphicon-chevron-right phrase-meaning-button"></span></h3>
+    </div>
+    <div class="panel-body">
+        {% for phrase in phrases %}
+        <ul>
+            <li>
+                {{ phrase.phrase.phrase }}
+                <ul class="phrase-meaning" hidden><li>{{ phrase.phrase.meaning }}</li></ul>
+            </li>
+        </ul>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title" onclick="expand('example-meaning')">例文&nbsp;<span class="glyphicon glyphicon-chevron-right example-meaning-button"></span></h3>
+    </div>
+    <div class="panel-body">
+        {% for example in examples %}
+        <ul>
+            <li>{{ example.example.sentence }}</li>
+            <ul class="example-meaning" hidden><li>{{ example.example.meaning }}</li></ul>
+        </ul>
+        {% endfor %}
+    </div>
+</div>
