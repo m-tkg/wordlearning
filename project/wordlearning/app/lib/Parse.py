@@ -30,7 +30,6 @@ class Parse:
         text_simple = text.lower()
         text_simple = re.sub(r'[^a-z\'\-]', ' ', text_simple)
         words = re.split(r' ', text_simple)
-        words_new = {}
         for i in range(len(words)):
             words[i] = re.sub(r'^\'', '', words[i])
             words[i] = re.sub(r'\'$', '', words[i])
