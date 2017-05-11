@@ -13,7 +13,7 @@ function expand(ctrl){
 function speech(text){
     var msg = new SpeechSynthesisUtterance();
     var voices = window.speechSynthesis.getVoices();
-    msg.voice = voices[0];
+    msg.voice = voices[10];
     msg.volume = 1.0;
     msg.rate = 1.0;
     msg.pitch = 1.1;
