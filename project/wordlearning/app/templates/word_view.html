@@ -10,13 +10,24 @@ function expand(ctrl){
         $('.' + ctrl + '-button').addClass('glyphicon-chevron-right')
     }
 }
+function speech(text){
+    var msg = new SpeechSynthesisUtterance();
+    var voices = window.speechSynthesis.getVoices();
+    msg.voice = voices[0];
+    msg.volume = 1.0;
+    msg.rate = 1.0;
+    msg.pitch = 1.1;
+    msg.text = text;
+    msg.lang = 'en-US';
+    speechSynthesis.speak(msg);
+}
 </script>
 
-<h3 class="page-header">{{ word.word }}</h3>
+<h3 class="page-header" onclick="speech('{{ word.word }}')">{{ word.word }}</h3>
 
 {% if word %}
-<div class="panel panel-primary" onclick="expand('word-meaning')">
-    <div class="panel-heading">
+<div class="panel panel-primary">
+    <div class="panel-heading" onclick="expand('word-meaning')">
         <h3 class="panel-title" style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none;">意味&nbsp;<span class="glyphicon glyphicon-chevron-right word-meaning-button"></span></h3>
     </div>
     <div class="panel-body">
@@ -39,7 +50,7 @@ function expand(ctrl){
         {% for phrase in phrases %}
         <ul>
             <li>
-                {{ phrase.phrase.phrase }}
+                {{ phrase.phrase.phrase }}&nbsp;<span class="glyphicon glyphicon-volume-up" onclick="speech('{{ phrase.phrase.phrase }}')"></span>
                 <ul class="phrase-meaning" hidden><li>{{ phrase.phrase.meaning }}</li></ul>
             </li>
         </ul>
@@ -56,7 +67,7 @@ function expand(ctrl){
     <div class="panel-body">
         {% for example in examples %}
         <ul>
-            <li>{{ example.example.sentence }}</li>
+            <li>{{ example.example.sentence }}&nbsp;<span class="glyphicon glyphicon-volume-up" onclick="speech('{{ example.example.sentence }}')"></span></li>
             <ul class="example-meaning" hidden><li>{{ example.example.meaning }}</li></ul>
         </ul>
         {% endfor %}
