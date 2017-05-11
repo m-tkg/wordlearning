@@ -204,7 +204,7 @@ def weblio(request):
                 wordphrase.save()
         for example in result['examples']:
             try:
-                Example.objects.get(phrase=example['text'])
+                Example.objects.get(sentence=example['text'])
             except:
                 new_example = Example()
                 new_example.sentence = example['text']
