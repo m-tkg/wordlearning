@@ -101,7 +101,7 @@ class Parse:
                     tag.find('audio').extract()
                     tag.find('i').extract()
                     english = tag.text
-                    tag = s.findAll(class_='qotC')[0].find(class_='qotCJ')
+                    tag = example.find(class_='qotCJ')
                     tag.find('span').extract()
                     japanese = tag.text
                     examples.append({'text': english, 'meaning': japanese})
