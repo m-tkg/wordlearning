@@ -103,6 +103,8 @@ def words(request):
             word = {}
             word['id'] = w.id
             word['word'] = w.word
+            word['meaning'] = w.meaning
+            word['imageurl'] = w.imageurl
             word['cnt'] = wordscnt[w.id]
             word['status'] = w.status
             words.append(word)
@@ -145,6 +147,8 @@ def articleWords(request):
             word = {}
             word['id'] = w.word.id
             word['word'] = w.word.word
+            word['meaning'] = w.word.meaning
+            word['imageurl'] = w.word.imageurl
             word['cnt'] = w.count
             word['status'] = w.word.status
             words.append(word)

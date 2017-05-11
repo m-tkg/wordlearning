@@ -15,19 +15,25 @@ function expand(ctrl){
 <h3 class="page-header">{{ word.word }}</h3>
 
 {% if word %}
-<div class="panel panel-primary">
-    <div class="panel-heading" onclick="expand('word-meaning')">
-        <h3 class="panel-title">意味&nbsp;<span class="glyphicon glyphicon-chevron-right word-meaning-button"></span></h3>
+<div class="panel panel-primary" onclick="expand('word-meaning')">
+    <div class="panel-heading">
+        <h3 class="panel-title" style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none;">意味&nbsp;<span class="glyphicon glyphicon-chevron-right word-meaning-button"></span></h3>
     </div>
     <div class="panel-body">
-        <span class="word-meaning" hidden>{{ word.meaning }}</span>
+        <div class="word-meaning" hidden>
+            {% if word.imageurl %}
+            <img src="{{ word.imageurl }}" width="200"/><br/>
+            {% endif %}
+            {{ word.meaning }}
+        </div>
     </div>
 </div>
 {% endif %}
 
+{% if phrases %}
 <div class="panel panel-primary">
-    <div class="panel-heading">
-        <h3 class="panel-title" onclick="expand('phrase-meaning')">フレーズ&nbsp;<span class="glyphicon glyphicon-chevron-right phrase-meaning-button"></span></h3>
+    <div class="panel-heading" onclick="expand('phrase-meaning')">
+        <h3 class="panel-title" style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none;">フレーズ&nbsp;<span class="glyphicon glyphicon-chevron-right phrase-meaning-button"></span></h3>
     </div>
     <div class="panel-body">
         {% for phrase in phrases %}
@@ -40,11 +46,12 @@ function expand(ctrl){
         {% endfor %}
     </div>
 </div>
+{% endif %}
 
 {% if examples %}
 <div class="panel panel-primary">
-    <div class="panel-heading">
-        <h3 class="panel-title" onclick="expand('example-meaning')">例文&nbsp;<span class="glyphicon glyphicon-chevron-right example-meaning-button"></span></h3>
+    <div class="panel-heading" onclick="expand('example-meaning')">
+        <h3 class="panel-title" style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none;">例文&nbsp;<span class="glyphicon glyphicon-chevron-right example-meaning-button"></span></h3>
     </div>
     <div class="panel-body">
         {% for example in examples %}

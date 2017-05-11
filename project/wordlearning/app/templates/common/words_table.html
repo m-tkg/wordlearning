@@ -36,7 +36,14 @@ $(document).ready(function() {
                         <span class="label label-{{ label }}">{{ status }}</span>
                     {% endif %}
                 {% endfor %}
+                {% if word.meaning == '' %}
+                {{ word.word }}
+                {% else %}
                 <a href="/words/view?id={{ word.id }}">{{ word.word }}</a>
+                {% endif %}
+                {% if word.imageurl %}
+                <span class="glyphicon glyphicon-picture"></span>
+                {% endif %}
                 <span class="badge">{{ word.cnt }}</span>
             </td>
         </tr>
