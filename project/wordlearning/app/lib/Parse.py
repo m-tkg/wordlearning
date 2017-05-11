@@ -104,7 +104,10 @@ class Parse:
                     tag = example.find(class_='qotCJ')
                     tag.find('span').extract()
                     japanese = tag.text
-                    examples.append({'text': english, 'meaning': japanese})
+                    if len(english) < 256 and len(japanese) < 256:
+                        examples.append({'text': english, 'meaning': japanese})
+                        if len(examples) > 10:
+                            break
                 except:
                     pass
         result['examples'] = examples
