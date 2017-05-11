@@ -20,8 +20,8 @@
         <tr>
             <td>{{ article.date }}</td>
             <td><a href='{{ article.url }}'>{{ article.domain }}</a></td>
-            <td><a href='/view/article?id={{ article.id }}'>{{ article.title }}</a></td>
-            <td><a href='/view/words?id={{ article.id }}'>view</a></td>
+            <td><a href='/articles/view?id={{ article.id }}'>{{ article.title }}</a></td>
+            <td><a href='/articles/words?id={{ article.id }}'>view</a></td>
             <td><a href='/delete/article?id={{ article.id }}' class="btn btn-danger">×</a></td>
         </tr>
         {% endfor %}

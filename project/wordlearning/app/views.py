@@ -16,14 +16,14 @@ def index(request):
     return redirect("app:articles_list")
 
 
-def articles_list(request):
+def articles(request):
     articles = Article.objects.all().order_by('id')
     form = ArticleForm(instance=Article())
     context = {'form': form, 'articles': articles, 'active_articles': True, 'template': './articles_list.html'}
     return render(request, './common/base.html', context)
 
 
-def articles_view(request):
+def articlesView(request):
     if "id" not in request.GET:
         return redirect("app:articles_list")
     article = Article.objects.get(id=request.GET.get("id"))
@@ -32,7 +32,7 @@ def articles_view(request):
     return render(request, './common/base.html', context)
 
 
-def articles_parse(request):
+def parseArticle(request):
     if request.method == 'POST':
         if "url" in request.POST:
             url = request.POST.get("url")
@@ -70,7 +70,7 @@ def articles_parse(request):
     return redirect("app:articles_list")
 
 
-def articles_delete(request):
+def deleteArticle(request):
     if "id" not in request.GET:
         return redirect("app:articles_list")
     Article.objects.get(id=request.GET.get("id")).delete()
@@ -78,7 +78,7 @@ def articles_delete(request):
     return redirect("app:articles_list")
 
 
-def words_list(request):
+def words(request):
     if request.method == 'POST':
         status = request.POST.get('change_status')
         for id in request.POST.getlist('check'):
@@ -124,7 +124,7 @@ def words_list(request):
     return render(request, './common/base.html', context)
 
 
-def words_view(request):
+def articleWords(request):
     if request.method == 'POST':
         status = request.POST.get('change_status')
         for id in request.POST.getlist('check'):
