@@ -1,4 +1,16 @@
 from django.db import models
+from datetime import datetime
+
+
+class WeblioLock(models.Model):
+    status_list = (
+        ('parsing', 'parsing'),
+        ('complete', 'complete'),
+        ('stop', 'stop')
+    )
+    status = models.CharField(verbose_name='Status', choices=status_list, max_length=16, default='parsing')
+    create = models.DateTimeField(verbose_name='Create Date', default=datetime.now)
+    update = models.DateTimeField(verbose_name='Update Date', auto_now=True)
 
 
 class Article(models.Model):

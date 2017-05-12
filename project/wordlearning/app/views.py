@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render
+from app.models import WeblioLock
 from app.models import Article
 from app.models import Word
 from app.models import WordCount
@@ -8,6 +9,7 @@ from app.models import Example
 from app.models import WordExample
 from app.lib.Parse import Parse
 import urllib.parse
+import threading
 from django.db.models.aggregates import Sum
 
 
@@ -186,34 +188,16 @@ def wordsView(request):
 
 
 def weblio(request):
-    words = Word.objects.filter(meaning='')
-    for word in words:
-        result = Parse.weblioWord(word.word)
-        word.meaning = result['meaning']
-        word.imageurl = result['imageurl']
-        word.save()
-        for phrase in result['phrases']:
-            try:
-                Phrase.objects.get(phrase=phrase['text'])
-            except:
-                new_phrase = Phrase()
-                new_phrase.phrase = phrase['text']
-                new_phrase.meaning = phrase['meaning']
-                new_phrase.save()
-                wordphrase = WordPhrase()
-                wordphrase.word = word
-                wordphrase.phrase = new_phrase
-                wordphrase.save()
-        for example in result['examples']:
-            try:
-                Example.objects.get(sentence=example['text'])
-            except:
-                new_example = Example()
-                new_example.sentence = example['text']
-                new_example.meaning = example['meaning']
-                new_example.save()
-                wordexample = WordExample()
-                wordexample.word = word
-                wordexample.example = new_example
-                wordexample.save()
+    try:
+        lock = WeblioLock.objects.order_by('id').reverse()[:1][0]
+        if lock.status == 'parsing':
+            return render(request, './ok.html')
+    except:
+        pass
+    lock = WeblioLock()
+    lock.save()
+
+    t = threading.Thread(target=Parse.weblio)
+    t.start()
+
     return render(request, './ok.html')

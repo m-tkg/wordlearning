@@ -7,6 +7,12 @@ import re
 from collections import Counter
 from readability.readability import Document
 from nltk.corpus import wordnet as wn
+from app.models import WeblioLock
+from app.models import Word
+from app.models import WordPhrase
+from app.models import Phrase
+from app.models import Example
+from app.models import WordExample
 
 
 class Parse:
@@ -115,3 +121,48 @@ class Parse:
         result['examples'] = examples
 
         return result
+
+    @staticmethod
+    def _checkStop():
+        lock = WeblioLock.objects.order_by('id').reverse()[:1][0]
+        return (lock.status == 'stop')
+
+    @staticmethod
+    def weblio():
+        words = Word.objects.filter(meaning='')
+        for word in words:
+            if Parse._checkStop():
+                break
+            result = Parse.weblioWord(word.word)
+            word.meaning = result['meaning']
+            word.imageurl = result['imageurl']
+            word.save()
+            for phrase in result['phrases']:
+                try:
+                    Phrase.objects.get(phrase=phrase['text'])
+                except:
+                    new_phrase = Phrase()
+                    new_phrase.phrase = phrase['text']
+                    new_phrase.meaning = phrase['meaning']
+                    new_phrase.save()
+                    wordphrase = WordPhrase()
+                    wordphrase.word = word
+                    wordphrase.phrase = new_phrase
+                    wordphrase.save()
+            for example in result['examples']:
+                try:
+                    Example.objects.get(sentence=example['text'])
+                except:
+                    new_example = Example()
+                    new_example.sentence = example['text']
+                    new_example.meaning = example['meaning']
+                    new_example.save()
+                    wordexample = WordExample()
+                    wordexample.word = word
+                    wordexample.example = new_example
+                    wordexample.save()
+
+        lock = WeblioLock.objects.order_by('id').reverse()[:1][0]
+        if lock.status == 'parsing':
+            lock.status = 'complete'
+            lock.save()
