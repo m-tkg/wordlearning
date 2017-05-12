@@ -210,9 +210,10 @@ def weblio(request):
 def stopWeblio(request):
     try:
         lock = WeblioLock.objects.order_by('id').reverse()[:1][0]
-        lock = WeblioLock()
-        lock.status = 'stop'
-        lock.save()
+        if lock.status != 'stop':
+            lock = WeblioLock()
+            lock.status = 'stop'
+            lock.save()
     except:
         pass
 
