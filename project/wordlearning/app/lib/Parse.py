@@ -130,6 +130,12 @@ class Parse:
     @staticmethod
     def weblio():
         words = Word.objects.filter(meaning='')
+        if len(words) == 0:
+            return
+
+        lock = WeblioLock()
+        lock.save()
+
         for word in words:
             if Parse._checkStop():
                 break

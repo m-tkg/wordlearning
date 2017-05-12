@@ -192,8 +192,6 @@ def weblio(request):
             return render(request, './ok.html')
     except:
         pass
-    lock = WeblioLock()
-    lock.save()
 
     t = threading.Thread(target=Parse.weblio)
     t.start()
