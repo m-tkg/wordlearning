@@ -115,6 +115,7 @@ def words(request):
             word['imageurl'] = w.imageurl
             word['cnt'] = wordscnt[w.id]
             word['status'] = w.status
+            word['statuslabel'] = w.status.replace(' ', '_')
             words.append(word)
             if word['cnt'] > max:
                 max = word['cnt']
@@ -159,6 +160,7 @@ def articleWords(request):
             word['imageurl'] = w.word.imageurl
             word['cnt'] = w.count
             word['status'] = w.word.status
+            word['statuslabel'] = w.word.status.replace(' ', '_')
             words.append(word)
             if word['cnt'] > max:
                 max = word['cnt']
