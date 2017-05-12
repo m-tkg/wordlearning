@@ -6,7 +6,8 @@ class WeblioLock(models.Model):
     status_list = (
         ('parsing', 'parsing'),
         ('complete', 'complete'),
-        ('stop', 'stop')
+        ('stop', 'stop'),
+        ('restart', 'restart')
     )
     status = models.CharField(verbose_name='Status', choices=status_list, max_length=16, default='parsing')
     create = models.DateTimeField(verbose_name='Create Date', default=datetime.now)

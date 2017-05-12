@@ -190,6 +190,8 @@ def weblio(request):
         lock = WeblioLock.objects.order_by('id').reverse()[:1][0]
         if lock.status == 'parsing':
             return render(request, './ok.html')
+        if lock.status == 'stop':
+            return render(request, './ok.html')
     except:
         pass
 
@@ -202,8 +204,21 @@ def weblio(request):
 def stopWeblio(request):
     try:
         lock = WeblioLock.objects.order_by('id').reverse()[:1][0]
-        if lock.status == 'parsing':
-            lock.status = 'stop'
+        lock = WeblioLock()
+        lock.status = 'stop'
+        lock.save()
+    except:
+        pass
+
+    return render(request, './ok.html')
+
+
+def restartWeblio(request):
+    try:
+        lock = WeblioLock.objects.order_by('id').reverse()[:1][0]
+        if lock.status == 'stop':
+            lock = WeblioLock()
+            lock.status = 'restart'
             lock.save()
     except:
         pass
