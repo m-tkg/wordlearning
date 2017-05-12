@@ -1,6 +1,24 @@
-<h3 class="page-header">Body</h3>
-<div class="well">
+<script type="text/javascript">
+function speech(id){
+    var msg = new SpeechSynthesisUtterance();
+    var voices = window.speechSynthesis.getVoices();
+    msg.voice = voices[10];
+    msg.volume = 1.0;
+    msg.rate = 1.0;
+    msg.pitch = 1.1;
+    msg.text = $('#' + id).text();
+    msg.lang = 'en-US';
+    speechSynthesis.speak(msg);
+}
+</script>
+<h3 class="page-header">Body&nbsp;<span class="glyphicon glyphicon-volume-up" onclick="speech('body')"></span></h3>
+<div class="well" id="body">
     {% for line in lines %}
-    <p>{{ line }}</p>
+    <p id="{{ forloop.counter }}">
+        {% if line != ' ' and line != '' %}
+        <span class="glyphicon glyphicon-volume-up" onclick="speech('{{ forloop.counter }}')"></span>
+        {% endif %}
+        {{ line }}
+    </p>
     {% endfor %}
 </div>
