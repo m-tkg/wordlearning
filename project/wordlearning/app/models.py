@@ -59,3 +59,8 @@ class Example(models.Model):
 class WordExample(models.Model):
     word = models.ForeignKey(Word, related_name='word_of_WordExample')
     example = models.ForeignKey(Example, related_name='example_of_WordExample')
+
+
+class TestSequence(models.Model):
+    word = models.ForeignKey(Word, related_name='word_for_test')
+    answer = models.IntegerField(verbose_name='Answer', default='0')

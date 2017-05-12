@@ -1,0 +1,33 @@
+<h1 class="page-header">Test settings</h1>
+<script type="text/javascript">
+$(document).ready(function() {
+    for( keyvalue of document.cookie.split('; ')){
+        cookie = keyvalue.split( '=' );
+        status = cookie[0].replace('_', ' ');
+        {% for status, name in wordstatus %}
+            if( status == '{{ status }}' ){
+                $('#checkbox{{ forloop.counter }}').prop('checked', eval(cookie[1]))
+                if(cookie[1] == 'false')
+                    $('.class' + cookie[0]).hide();
+            }
+        {% endfor %}
+    }
+});
+function updatelist(status, obj) {
+    status = status.replace(' ', '_')
+    if(obj.checked == true)
+        document.cookie = status + '=true';
+    else
+        document.cookie = status + '=false';
+    updatebutton();
+}
+</script>
+<form action="/test" method="POST">
+    {% csrf_token %}
+    <input type="number" name="max_questions" min="1" max="100" value="100"/><br/>
+    <input type="hidden" name="index" value="0"/>
+    {% for status, label in wordstatus %}
+        <label class='checkbox-inline'><input type="checkbox" id='checkbox{{ forloop.counter }}' name="status" value="{{ forloop.counter }}" checked onchange="updatelist('{{ status }}', this)"><span class="label label-{{ label }}">{{ status }}</span></label>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
