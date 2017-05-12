@@ -26,3 +26,6 @@ services:
       - ./requirements.txt:/requirements.txt
     links:
       - dbserver
+  cron:
+    image: alpine
+    command: sh -c "echo '* * * * * wget http://webapp:8080/parse/weblio >/dev/null 2>&1' > /var/spool/cron/crontabs/root; crond -f"
