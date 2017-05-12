@@ -37,39 +37,41 @@ def articlesView(request):
 
 
 def parseArticle(request):
-    if request.method == 'POST':
-        if "url" in request.POST:
-            url = request.POST.get("url")
+    if "url" not in request.GET:
+        return redirect("app:articles")
 
-            # article
-            try:
-                article = Article.objects.get(url=url)
-            except:
-                article = Article()
-            text = Parse.getHtml(url)
-            article.url = url
-            article.domain = urllib.parse.urlparse(url).netloc
-            (article.date, article.title, article.body) = text.split('\n', 2)
-            article.save()
+    url = request.GET.get("url")
 
-            # word
-            count = Parse.countWord(text)
-            for w in count.keys():
-                try:
-                    word = Word.objects.get(word=w)
-                except:
-                    word = Word()
-                try:
-                    wordcount = WordCount.objects.get(article_id=article.id, word=word.id)
-                except:
-                    wordcount = WordCount()
-                word.status = 'not started'
-                word.word = w
-                word.save()
-                wordcount.article_id = article.id
-                wordcount.word = word
-                wordcount.count = count[w]
-                wordcount.save()
+    # article
+    try:
+        article = Article.objects.get(url=url)
+    except:
+        article = Article()
+    text = Parse.getHtml(url)
+    article.url = url
+    article.domain = urllib.parse.urlparse(url).netloc
+    (article.date, article.title, article.body) = text.split('\n', 2)
+    article.body = article.body.strip()
+    article.save()
+
+    # word
+    count = Parse.countWord(text)
+    for w in count.keys():
+        try:
+            word = Word.objects.get(word=w)
+        except:
+            word = Word()
+        try:
+            wordcount = WordCount.objects.get(article_id=article.id, word=word.id)
+        except:
+            wordcount = WordCount()
+        word.status = 'not started'
+        word.word = w
+        word.save()
+        wordcount.article_id = article.id
+        wordcount.word = word
+        wordcount.count = count[w]
+        wordcount.save()
 
     return redirect("app:articles")
 
@@ -169,7 +171,7 @@ def articleWords(request):
         'count': count,
         'id': request.GET.get("id"),
         'max': max,
-        'active_wordsinarticle': True,
+        'active_words': True,
         'template': 'words_in_article.html'
         }
     return render(request, './common/base.html', context)
