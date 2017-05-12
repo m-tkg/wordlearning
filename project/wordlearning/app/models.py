@@ -33,6 +33,10 @@ class Word(models.Model):
     imageurl = models.CharField(verbose_name='ImageUrl', max_length=255, default='')
     meaning = models.CharField(verbose_name='Meaning', max_length=255, default='')
     status = models.CharField(verbose_name='Status', choices=status_list, max_length=16, default='not started')
+    answer_ok = models.IntegerField(verbose_name='Answer OK', default=0)
+    answer_ng = models.IntegerField(verbose_name='Answer NG', default=0)
+    create = models.DateTimeField(verbose_name='Create Date', default=datetime.now)
+    update = models.DateTimeField(verbose_name='Update Date', auto_now=True)
 
 
 class WordCount(models.Model):

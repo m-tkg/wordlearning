@@ -272,16 +272,24 @@ def test(request):
 
     index = int(request.GET.get("index"))
     test_seqs = TestSequence.objects.select_related().all().order_by('id')
+    # 2nd or later question answerd
+    if index > 0:
+        pre_question = test_seqs[index - 1]
+        pre_question.answer = int(request.GET.get("answer"))
+        pre_question.save()
+    # all question answerd
     if index >= len(test_seqs):
+        for question in test_seqs:
+            if question.answer == 1:
+                question.word.answer_ok += 1
+            else:
+                question.word.answer_ng += 1
+            question.word.save()
         context = {
             'active_test': True,
             'template': './test_complete.html'
             }
         return render(request, './common/base.html', context)
-    elif index > 0:
-        pre_question = test_seqs[index - 1]
-        pre_question.answer = int(request.GET.get("answer"))
-        pre_question.save()
 
     word = test_seqs[index].word
     phrases = WordPhrase.objects.select_related().filter(word=word)

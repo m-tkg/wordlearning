@@ -11,6 +11,9 @@ $(document).ready(function() {
                     $('.class' + cookie[0]).hide();
             }
         {% endfor %}
+        if( cookie[0] == 'question_max' ){
+            $('#max_questions').val(cookie[1])
+        }
     }
 });
 function updatelist(status, obj) {
@@ -21,13 +24,16 @@ function updatelist(status, obj) {
         document.cookie = status + '=false';
     updatebutton();
 }
+function updatecount(obj) {
+    document.cookie = 'question_max=' + obj.value;
+}
 </script>
 <form action="/test" method="POST">
     {% csrf_token %}
-    <input type="number" name="max_questions" min="1" max="100" value="100"/><br/>
+    <input type="number" id="max_questions" name="max_questions" min="1" max="100" value="100" onchange="updatecount(this)"/><br/>
     <input type="hidden" name="index" value="0"/>
     {% for status, label in wordstatus %}
         <label class='checkbox-inline'><input type="checkbox" id='checkbox{{ forloop.counter }}' name="status" value="{{ forloop.counter }}" checked onchange="updatelist('{{ status }}', this)"><span class="label label-{{ label }}">{{ status }}</span></label>
     {% endfor %}
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Start</button>
 </form>
