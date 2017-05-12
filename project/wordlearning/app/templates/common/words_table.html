@@ -10,22 +10,46 @@ $(document).ready(function() {
             $c.parent().parent().addClass("success");
             $c.prop('checked', 'checked');
         }
+        updatebutton();
     });
+    applycookie();
 });
 function updatelist(status, obj) {
     status = status.replace(' ', '_')
-    if(obj.checked == true)
+    if(obj.checked == true){
+        document.cookie = status + '=true';
         $('.class' + status).show();
-    else{
+    }else{
+        document.cookie = status + '=false';
         $('.class' + status).hide();
         $('.class' + status).removeClass("success");
         $.each($('.class' + status).find('input[type=checkbox]'), function(i, e){e.checked=false})
+    }
+    updatebutton();
+}
+function updatebutton(){
+    if($('tbody').find('.success').length == 0)
+        $('#statusdropdown').addClass('disabled')
+    else
+        $('#statusdropdown').removeClass('disabled')
+}
+function applycookie(){
+    for( keyvalue of document.cookie.split('; ')){
+        cookie = keyvalue.split( '=' );
+        status = cookie[0].replace('_', ' ');
+        {% for status, name in wordstatus %}
+            if( status == '{{ status }}' ){
+                $('#checkbox{{ forloop.counter }}').prop('checked', eval(cookie[1]))
+                if(cookie[1] == 'false')
+                    $('.class' + cookie[0]).hide();
+            }
+        {% endfor %}
     }
 }
 </script>
 <input type="hidden" name="change_status" id="change_status" value=""/>
 <div class="input-group">
-    <button type="submit" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown" aria-expanded="false">
+    <button type="submit" id="statusdropdown" class="btn btn-default dropdown-toggle btn-xs disabled" data-toggle="dropdown" aria-expanded="false">
         Change status
         <span class="caret"></span>
     </button>
@@ -36,7 +60,7 @@ function updatelist(status, obj) {
 	</ul>
     <br/>
     {% for status, label in wordstatus %}
-        <label class='checkbox-inline'><input type="checkbox" checked onchange="updatelist('{{ status }}', this)"><span class="label label-{{ label }}">{{ status }}</span></label>
+        <label class='checkbox-inline'><input type="checkbox" id='checkbox{{ forloop.counter }}' checked onchange="updatelist('{{ status }}', this)"><span class="label label-{{ label }}">{{ status }}</span></label>
     {% endfor %}
 </div>
 <br/>
