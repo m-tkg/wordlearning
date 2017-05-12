@@ -18,10 +18,11 @@ services:
     links:
       - webapp
   webapp:
-    build: .
+    image: python:3.6.1
     command: /app/run.sh
     hostname: webapp
     volumes:
       - ./project:/app
+      - ./requirements.txt:/requirements.txt
     links:
       - dbserver
