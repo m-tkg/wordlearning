@@ -4,8 +4,6 @@ from app.models import Article
 from app.models import Word
 from app.models import WordCount
 from app.models import WordPhrase
-from app.models import Phrase
-from app.models import Example
 from app.models import WordExample
 from app.lib.Parse import Parse
 import urllib.parse
