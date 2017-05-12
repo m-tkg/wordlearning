@@ -199,3 +199,15 @@ def weblio(request):
     t.start()
 
     return render(request, './ok.html')
+
+
+def stopWeblio(request):
+    try:
+        lock = WeblioLock.objects.order_by('id').reverse()[:1][0]
+        if lock.status == 'parsing':
+            lock.status = 'stop'
+            lock.save()
+    except:
+        pass
+
+    return render(request, './ok.html')

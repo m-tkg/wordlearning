@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^delete/article$', views.deleteArticle, name='delete_article'),
     url(r'^parse/article$', views.parseArticle, name='parse_article'),
     url(r'^parse/weblio$', views.weblio, name='weblio'),
+    url(r'^stop/weblio$', views.stopWeblio, name='stop_weblio'),
 ]
