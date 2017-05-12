@@ -23,7 +23,7 @@ function speech(text){
 }
 </script>
 
-<h3 class="page-header" onclick="speech('{{ word.word }}')">{{ word.word }}</h3>
+<h3 class="page-header">{{ word.word }}&nbsp;<span class="glyphicon glyphicon-volume-up" onclick="speech('{{ word.word }}')"></span></h3>
 
 {% if word %}
 <div class="panel panel-primary">

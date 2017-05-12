@@ -26,7 +26,12 @@ def articlesView(request):
         return redirect("app:articles")
     article = Article.objects.get(id=request.GET.get("id"))
     lines = article.body.split('\n')
-    context = {'lines': lines, 'active_articles': True, 'template': './articles_view.html'}
+    context = {
+        'title': article.title,
+        'lines': lines,
+        'active_articles': True,
+        'template': './articles_view.html'
+        }
     return render(request, './common/base.html', context)
 
 
