@@ -27,6 +27,7 @@ def articlesView(request):
     article = Article.objects.get(id=request.GET.get("id"))
     lines = article.body.split('\n')
     context = {
+        'id': request.GET.get("id"),
         'title': article.title,
         'lines': lines,
         'active_articles': True,

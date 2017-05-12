@@ -11,7 +11,7 @@ function speech(id){
     speechSynthesis.speak(msg);
 }
 </script>
-<h3 class="page-header" id="title"><span class="glyphicon glyphicon-volume-up" onclick="speech('title')"></span>&nbsp;{{ title }}</h3>
+<h3 class="page-header" id="title"><span class="glyphicon glyphicon-volume-up" onclick="speech('title')"></span>&nbsp;{{ title }}<a href='/articles/words?id={{ id }}' class="glyphicon glyphicon-list-alt"></a></h3>
 <div class="well" id="body">
     {% for line in lines %}
     <p id="{{ forloop.counter }}">
