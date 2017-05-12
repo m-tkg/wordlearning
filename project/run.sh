@@ -9,8 +9,8 @@ retry() {
   until [ $n -ge ${MAX_RETRY} ]
   do
     "${@}" >>${LOGFILE} 2>&1 && break
-    echo "retrying...: ${@}" >>${LOGFILE} 2>&1
-    n=$[${n}+1]
+    n=$(( n + 1 ))
+    echo "retrying(${n}/${MAX_RETRY})...: ${@}" >>${LOGFILE} 2>&1
     sleep 1
   done
   if [ $n -ge ${MAX_RETRY} ]; then
@@ -20,6 +20,8 @@ retry() {
 }
 
 touch ${LOGFILE}
+retry pip install -r /requirements.txt
+retry python -c 'import nltk; nltk.download("wordnet")'
 retry python ${ROOTDIR}/wordlearning/manage.py makemigrations app
 retry python ${ROOTDIR}/wordlearning/manage.py migrate
 retry python ${ROOTDIR}/wordlearning/manage.py runserver 0.0.0.0:8080
