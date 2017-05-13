@@ -137,6 +137,13 @@ def words(request):
     return render(request, './common/base.html', context)
 
 
+def phrases(request):
+    context = {
+        'template': 'words_list.html'
+        }
+    return render(request, './common/base.html', context)
+
+
 def articleWords(request):
     if request.method == 'POST':
         status = request.POST.get('change_status')
@@ -190,6 +197,7 @@ def wordsView(request):
     phrases = WordPhrase.objects.select_related().filter(word=word)
     examples = WordExample.objects.select_related().filter(word=word)
     context = {
+        'title': word.word,
         'word': word,
         'phrases': phrases,
         'examples': examples,
@@ -241,77 +249,10 @@ def restartWeblio(request):
     return render(request, './ok.html')
 
 
-def wordTest(request):
-    wordstatus = Word().status_list
-    if request.method == 'POST':
-        _words = []
-        for val in request.POST.getlist('status'):
-            _words.append(wordstatus[int(val) - 1][0])
-        if len(_words) == 1:
-            queries = [Q(status=_words[0])]
-        else:
-            queries = [Q(status__contains=w) for w in _words]
-        query = queries.pop()
-        for item in queries:
-            query |= item
-        TestSequence.objects.all().delete()
-        words = Word.objects.filter(query)
-        words = sorted(words, key=lambda x: random.random())[:int(request.POST.get("max_questions"))]
-        for word in words:
-            test_seq = TestSequence()
-            test_seq.word = word
-            test_seq.save()
-        return redirect(request.path + '?index=0')
-
-    elif "index" not in request.GET:
-        context = {
-            'wordstatus': wordstatus,
-            'mode': 'word',
-            'active_wordtest': True,
-            'template': './test_start.html'
-            }
-        return render(request, './common/base.html', context)
-
-    index = int(request.GET.get("index"))
-    test_seqs = TestSequence.objects.select_related().all().order_by('id')
-    # 2nd or later question answerd
-    if index > 0:
-        pre_question = test_seqs[index - 1]
-        pre_question.answer = int(request.GET.get("answer"))
-        pre_question.save()
-    # all question answerd
-    if index >= len(test_seqs):
-        for question in test_seqs:
-            if question.answer == 1:
-                question.word.answer_ok += 1
-            else:
-                question.word.answer_ng += 1
-            question.word.save()
-        context = {
-            'mode': 'word',
-            'active_wordtest': True,
-            'template': './test_complete.html'
-            }
-        return render(request, './common/base.html', context)
-
-    word = test_seqs[index].word
-    phrases = WordPhrase.objects.select_related().filter(word=word)
-    examples = WordExample.objects.select_related().filter(word=word)
-    context = {
-        'percentage': (index + 1) * 100 / len(test_seqs),
-        'next_index': index + 1,
-        'word': word,
-        'phrases': phrases,
-        'examples': examples,
-        'mode': 'word',
-        'active_wordtest': True,
-        'template': './test.html'
-        }
-    return render(request, './common/base.html', context)
-
-
-def phraseTest(request):
+def wordphraseTest(request):
+    mode = request.path.split('/')[1]
     status = Word().status_list
+    # create tests
     if request.method == 'POST':
         _targets = []
         for val in request.POST.getlist('status'):
@@ -324,23 +265,31 @@ def phraseTest(request):
         for item in queries:
             query |= item
         TestSequence.objects.all().delete()
-        targets = Phrase.objects.filter(query)
+        if mode == 'word':
+            targets = Word.objects.filter(query)
+        else:
+            targets = Phrase.objects.filter(query)
         targets = sorted(targets, key=lambda x: random.random())[:int(request.POST.get("max_questions"))]
         for target in targets:
             test_seq = TestSequence()
-            test_seq.phrase = target
+            if mode == 'word':
+                test_seq.word = target
+            else:
+                test_seq.phrase = target
             test_seq.save()
         return redirect(request.path + '?index=0')
 
+    # test settings
     elif "index" not in request.GET:
         context = {
             'wordstatus': status,
-            'mode': 'phrase',
-            'active_phrasetest': True,
+            'mode': mode,
+            'active_' + mode + 'test': True,
             'template': './test_start.html'
             }
         return render(request, './common/base.html', context)
 
+    # answering
     index = int(request.GET.get("index"))
     test_seqs = TestSequence.objects.select_related().all().order_by('id')
     # 2nd or later question answerd
@@ -351,26 +300,41 @@ def phraseTest(request):
     # all question answerd
     if index >= len(test_seqs):
         for question in test_seqs:
-            if question.answer == 1:
-                question.phrase.answer_ok += 1
+            if mode == 'word':
+                t = question.word
             else:
-                question.phrase.answer_ng += 1
-            question.phrase.save()
+                t = question.phrase
+            if question.answer == 1:
+                t.answer_ok += 1
+            else:
+                t.answer_ng += 1
+            t.save()
         context = {
-            'mode': 'phrase',
-            'active_phrasetest': True,
+            'mode': mode,
+            'active_' + mode + 'test': True,
             'template': './test_complete.html'
             }
         return render(request, './common/base.html', context)
 
+    word = test_seqs[index].word
     phrase = test_seqs[index].phrase
-    phrases = WordPhrase.objects.select_related().filter(phrase=phrase)
+    examples = WordExample.objects.select_related().filter(word=word)
+    if mode == 'word':
+        title = word.word
+        phrases = WordPhrase.objects.select_related().filter(word=word)
+    else:
+        title = phrase.phrase
+        phrases = WordPhrase.objects.select_related().filter(phrase=phrase)
     context = {
         'percentage': (index + 1) * 100 / len(test_seqs),
         'next_index': index + 1,
+        'test': True,
+        'title': title,
+        'word': word,
         'phrases': phrases,
-        'mode': 'phrase',
-        'active_phrasetest': True,
-        'template': './test.html'
+        'examples': examples,
+        'mode': mode,
+        'active_' + mode + 'test': True,
+        'template': './word_view.html'
         }
     return render(request, './common/base.html', context)

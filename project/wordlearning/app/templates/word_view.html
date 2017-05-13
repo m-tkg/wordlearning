@@ -23,8 +23,10 @@ function speech(text){
 }
 </script>
 
-<h3 class="page-header">{{ word.word }}&nbsp;<span class="glyphicon glyphicon-volume-up" onclick="speech('{{ word.word }}')"></span></h3>
-
+<h3 class="page-header">{{ title }}&nbsp;<span class="glyphicon glyphicon-volume-up" onclick="speech('{{ title }}')"></span></h3>
+{% if test %}
+{% include 'test.html' %}
+{% endif %}
 {% if word %}
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="expand('word-meaning')">

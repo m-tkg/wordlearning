@@ -7,9 +7,10 @@ urlpatterns = [
     url(r'^articles/view$', views.articlesView, name='articles_view'),
     url(r'^articles/words$', views.articleWords, name='article_words'),
     url(r'^words$', views.words, name='words'),
+    url(r'^phrases$', views.phrases, name='phrases'),
     url(r'^words/view$', views.wordsView, name='words_view'),
-    url(r'^wordtest$', views.wordTest, name='wordtest'),
-    url(r'^phrasetest$', views.phraseTest, name='phrasetest'),
+    url(r'^word/test$', views.wordphraseTest, name='word_test'),
+    url(r'^phrase/test$', views.wordphraseTest, name='phrase_test'),
 
     url(r'^delete/article$', views.deleteArticle, name='delete_article'),
     url(r'^parse/article$', views.parseArticle, name='parse_article'),
