@@ -17,10 +17,10 @@ $(document).ready(function() {
 function updatelist(status, obj) {
     status = status.replace(' ', '_')
     if(obj.checked == true){
-        document.cookie = status + '=true';
+        document.cookie = status + '=true; path=/';
         $('.class' + status).show();
     }else{
-        document.cookie = status + '=false';
+        document.cookie = status + '=false; path=/';
         $('.class' + status).hide();
         $('.class' + status).removeClass("success");
         $.each($('.class' + status).find('input[type=checkbox]'), function(i, e){e.checked=false})
