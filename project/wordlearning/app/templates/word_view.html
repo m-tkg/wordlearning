@@ -12,6 +12,7 @@ function expand(ctrl){
 }
 function speech(text){
     var msg = new SpeechSynthesisUtterance();
+    speechSynthesis.cancel();
     var voices = window.speechSynthesis.getVoices();
     msg.voice = voices[10];
     msg.volume = 1.0;

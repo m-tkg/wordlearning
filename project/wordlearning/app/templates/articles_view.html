@@ -2,6 +2,7 @@
 function speech(id){
     var msg = new SpeechSynthesisUtterance();
     var voices = window.speechSynthesis.getVoices();
+    speechSynthesis.cancel();
     msg.voice = voices[10];
     msg.volume = 1.0;
     msg.rate = 1.0;
