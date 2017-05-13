@@ -2,7 +2,7 @@
     {% if article_id == 0 %}
         All {{ mode }}s
     {% else %}
-        <a href="/articles?id={{ article_id }}">{{ title }}</a>
+        <a href="/article/list?id={{ article_id }}">{{ title }}</a>
     {% endif %}
 </h1>
 <form action="/{{ mode }}/list" method="POST" id="wordform" class="form-horizontal" role="form">

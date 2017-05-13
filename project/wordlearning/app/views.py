@@ -16,25 +16,25 @@ import random
 
 
 def index(request):
-    return redirect("app:articles")
+    return redirect("app:article_list")
 
 
-def articles(request):
+def articleList(request):
     articles = Article.objects.all().order_by('id').reverse()
-    context = {'articles': articles, 'active_articles': True, 'template': './articles_list.html'}
+    context = {'articles': articles, 'active_article': True, 'template': './articles_list.html'}
     return render(request, './common/base.html', context)
 
 
-def articlesView(request):
+def articleView(request):
     if "id" not in request.GET:
-        return redirect("app:articles")
+        return redirect("app:article_list")
     article = Article.objects.get(id=request.GET.get("id"))
     lines = article.body.split('\n')
     context = {
         'id': request.GET.get("id"),
         'title': article.title,
         'lines': lines,
-        'active_articles': True,
+        'active_article': True,
         'template': './articles_view.html'
         }
     return render(request, './common/base.html', context)
@@ -42,7 +42,7 @@ def articlesView(request):
 
 def parseArticle(request):
     if "url" not in request.GET:
-        return redirect("app:articles")
+        return redirect("app:article_list")
 
     url = request.GET.get("url")
 
@@ -77,15 +77,15 @@ def parseArticle(request):
         wordcount.count = count[w]
         wordcount.save()
 
-    return redirect("app:articles")
+    return redirect("app:article_list")
 
 
 def deleteArticle(request):
     if "id" not in request.GET:
-        return redirect("app:articles")
+        return redirect("app:article_list")
     Article.objects.get(id=request.GET.get("id")).delete()
     WordCount.objects.filter(article_id=request.GET.get("id")).delete()
-    return redirect("app:articles")
+    return redirect("app:article_list")
 
 
 def wordphrasesList(request):
@@ -163,9 +163,9 @@ def wordphrasesList(request):
     return render(request, './common/base.html', context)
 
 
-def wordsView(request):
+def wordView(request):
     if "id" not in request.GET:
-        return redirect("app:words")
+        return redirect("app:word")
     word = Word.objects.get(id=request.GET.get("id"))
     phrases = WordPhrase.objects.select_related().filter(word=word)
     examples = WordExample.objects.select_related().filter(word=word)
@@ -209,7 +209,7 @@ def stopWeblio(request):
     return render(request, './ok.html')
 
 
-def restartWeblio(request):
+def resumeWeblio(request):
     try:
         lock = WeblioLock.objects.order_by('id').reverse()[:1][0]
         if lock.status == 'stop':
