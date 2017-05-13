@@ -129,7 +129,20 @@ def wordphrasesList(request):
         for w in wordcount:
             wordscnt[w['word']] = w['cnt']
     else:
-        targetlist = Phrase.objects.all()
+        if article_id == 0:
+            targetlist = Phrase.objects.all()
+        else:
+            wordcount = WordCount.objects.filter(article_id=article_id)
+            queries = [Q(word_id=w.word_id) for w in wordcount]
+            query = queries.pop()
+            for item in queries:
+                query |= item
+            _phrases = WordPhrase.objects.filter(query)
+            queries = [Q(id=p.phrase.id) for p in _phrases]
+            query = queries.pop()
+            for item in queries:
+                query |= item
+            targetlist = Phrase.objects.filter(query)
 
     targets = []
     for t in targetlist:
@@ -233,7 +246,7 @@ def wordphraseTest(request):
         if len(_targets) == 1:
             queries = [Q(status=_targets[0])]
         else:
-            queries = [Q(status__contains=t) for t in _targets]
+            queries = [Q(status=t) for t in _targets]
         query = queries.pop()
         for item in queries:
             query |= item

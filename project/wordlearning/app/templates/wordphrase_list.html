@@ -1,8 +1,8 @@
 <h1 class="page-header">
     {% if article_id == 0 %}
-        All {{ mode }}s
+        All {{ mode }}s&nbsp;({{ words|length }})
     {% else %}
-        <a href="/article/list?id={{ article_id }}">{{ title }}</a>
+        <a href="/article/list?id={{ article_id }}">{{ title }}</a>&nbsp;({{ words|length }})
     {% endif %}
 </h1>
 <form action="/{{ mode }}/list" method="POST" id="wordform" class="form-horizontal" role="form">
