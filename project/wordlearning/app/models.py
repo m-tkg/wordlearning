@@ -46,8 +46,19 @@ class WordCount(models.Model):
 
 
 class Phrase(models.Model):
+    status_list = (
+        ('master', 'success'),
+        ('studying', 'info'),
+        ('not started', 'danger'),
+        ('ignore', 'default')
+    )
     phrase = models.CharField(verbose_name='Phrase', max_length=255, unique=True)
     meaning = models.CharField(verbose_name='Meaning', max_length=255)
+    status = models.CharField(verbose_name='Status', choices=status_list, max_length=16, default='not started')
+    answer_ok = models.IntegerField(verbose_name='Answer OK', default=0)
+    answer_ng = models.IntegerField(verbose_name='Answer NG', default=0)
+    create = models.DateTimeField(verbose_name='Create Date', default=datetime.now)
+    update = models.DateTimeField(verbose_name='Update Date', auto_now=True)
 
 
 class WordPhrase(models.Model):
@@ -66,5 +77,6 @@ class WordExample(models.Model):
 
 
 class TestSequence(models.Model):
-    word = models.ForeignKey(Word, related_name='word_for_test')
+    word = models.ForeignKey(Word, related_name='word_for_test', default=None, null=True)
+    phrase = models.ForeignKey(Phrase, related_name='phrase_for_test', default=None, null=True)
     answer = models.IntegerField(verbose_name='Answer', default='0')

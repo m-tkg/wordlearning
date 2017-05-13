@@ -28,7 +28,7 @@ function updatecount(obj) {
     document.cookie = 'question_max=' + obj.value;
 }
 </script>
-<form action="/test" method="POST">
+<form action="/{{ mode }}test" method="POST">
     {% csrf_token %}
     <input type="number" id="max_questions" name="max_questions" min="1" max="100" value="100" onchange="updatecount(this)"/><br/>
     <input type="hidden" name="index" value="0"/>
