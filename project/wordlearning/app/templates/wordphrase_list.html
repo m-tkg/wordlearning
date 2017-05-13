@@ -1,4 +1,11 @@
-<h1 class="page-header">Words</h1>
+<h1 class="page-header">
+    {% if article_id == 0 %}
+        All {{ mode }}s
+    {% else %}
+        <a href="/articles?id={{ article_id }}">{{ title }}</a>
+    {% endif %}
+</h1>
 <form action="/{{ mode }}/list" method="POST" id="wordform" class="form-horizontal" role="form">
+    <input type="hidden" name="id" value="{{ article_id }}"/>
     {% include './common/wordphrase_table.html' %}
 </form>

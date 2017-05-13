@@ -90,6 +90,18 @@ def deleteArticle(request):
 
 def wordphrasesList(request):
     mode = request.path.split('/')[1]
+
+    article_id = 0
+    title = ''
+    if "id" in request.GET:
+        article_id = int(request.GET.get("id"))
+    elif "id" in request.POST:
+        article_id = int(request.POST.get("id"))
+
+    if article_id != 0:
+        article = Article.objects.get(id=article_id)
+        title = article.title
+
     if request.method == 'POST':
         status = request.POST.get('change_status')
         if mode == 'word':
@@ -102,14 +114,17 @@ def wordphrasesList(request):
                 phrase = Phrase.objects.get(id=id)
                 phrase.status = status
                 phrase.save()
-        count_str = ''
-        if "count" in request.POST:
-            count_str = "?count=" + request.POST.get("count")
-        return redirect(request.path + count_str)
+        params = ''
+        if article_id != 0:
+            params = "?id=" + str(article_id)
+        return redirect(request.path + params)
 
     if mode == 'word':
         targetlist = Word.objects.all()
-        wordcount = WordCount.objects.values('word').annotate(cnt=Sum('count'))
+        if article_id == 0:
+            wordcount = WordCount.objects.all().values('word').annotate(cnt=Sum('count'))
+        else:
+            wordcount = WordCount.objects.filter(article_id=article_id).values('word').annotate(cnt=Sum('count'))
         wordscnt = {}
         for w in wordcount:
             wordscnt[w['word']] = w['cnt']
@@ -118,6 +133,8 @@ def wordphrasesList(request):
 
     targets = []
     for t in targetlist:
+        if mode == 'word' and t.id not in wordscnt:
+            continue
         target = {}
         target['id'] = t.id
         if mode == 'word':
@@ -138,54 +155,10 @@ def wordphrasesList(request):
         'mode': mode,
         'words': targets,
         'wordstatus': wordstatus,
+        'article_id': article_id,
+        'title': title,
         'active_' + mode + '_list': True,
         'template': 'wordphrase_list.html'
-        }
-    return render(request, './common/base.html', context)
-
-
-def articleWords(request):
-    if request.method == 'POST':
-        status = request.POST.get('change_status')
-        for id in request.POST.getlist('check'):
-            word = Word.objects.get(id=id)
-            word.status = status
-            word.save()
-        count_str = "?id=" + request.POST.get("id") + "&count=" + request.POST.get("count")
-        return redirect(request.path + count_str)
-
-    if "id" not in request.GET:
-        return redirect("app:articles")
-    wordcount = WordCount.objects.select_related().filter(article_id=request.GET.get("id"))
-    count = 0
-    if "count" in request.GET:
-        count = int(request.GET.get("count"))
-    words = []
-    max = 0
-    for w in wordcount:
-        if w.count >= count:
-            word = {}
-            word['id'] = w.word.id
-            word['word'] = w.word.word
-            word['meaning'] = w.word.meaning
-            word['imageurl'] = w.word.imageurl
-            word['cnt'] = w.count
-            word['status'] = w.word.status
-            word['statuslabel'] = w.word.status.replace(' ', '_')
-            words.append(word)
-            if word['cnt'] > max:
-                max = word['cnt']
-    words = sorted(words, key=lambda x: x['cnt'], reverse=True)
-
-    wordstatus = Word().status_list
-    context = {
-        'words': words,
-        'wordstatus': wordstatus,
-        'count': count,
-        'id': request.GET.get("id"),
-        'max': max,
-        'active_words': True,
-        'template': 'words_in_article.html'
         }
     return render(request, './common/base.html', context)
 
