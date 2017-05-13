@@ -88,58 +88,58 @@ def deleteArticle(request):
     return redirect("app:articles")
 
 
-def words(request):
+def wordphrasesList(request):
+    mode = request.path.split('/')[1]
     if request.method == 'POST':
         status = request.POST.get('change_status')
-        for id in request.POST.getlist('check'):
-            word = Word.objects.get(id=id)
-            word.status = status
-            word.save()
+        if mode == 'word':
+            for id in request.POST.getlist('check'):
+                word = Word.objects.get(id=id)
+                word.status = status
+                word.save()
+        else:
+            for id in request.POST.getlist('check'):
+                phrase = Phrase.objects.get(id=id)
+                phrase.status = status
+                phrase.save()
         count_str = ''
         if "count" in request.POST:
             count_str = "?count=" + request.POST.get("count")
         return redirect(request.path + count_str)
 
-    wordcount = WordCount.objects.values('word').annotate(cnt=Sum('count'))
-    wordlist = Word.objects.all()
-    count = 0
-    if "count" in request.GET:
-        count = int(request.GET.get("count"))
-    words = []
-    wordscnt = {}
-    max = 0
-    for w in wordcount:
-        wordscnt[w['word']] = w['cnt']
-    for w in wordlist:
-        if w.id in wordscnt and wordscnt[w.id] >= count:
-            word = {}
-            word['id'] = w.id
-            word['word'] = w.word
-            word['meaning'] = w.meaning
-            word['imageurl'] = w.imageurl
-            word['cnt'] = wordscnt[w.id]
-            word['status'] = w.status
-            word['statuslabel'] = w.status.replace(' ', '_')
-            words.append(word)
-            if word['cnt'] > max:
-                max = word['cnt']
-    words = sorted(words, key=lambda x: x['cnt'], reverse=True)
+    if mode == 'word':
+        targetlist = Word.objects.all()
+        wordcount = WordCount.objects.values('word').annotate(cnt=Sum('count'))
+        wordscnt = {}
+        for w in wordcount:
+            wordscnt[w['word']] = w['cnt']
+    else:
+        targetlist = Phrase.objects.all()
+
+    targets = []
+    for t in targetlist:
+        target = {}
+        target['id'] = t.id
+        if mode == 'word':
+            target['word'] = t.word
+            target['imageurl'] = t.imageurl
+            target['cnt'] = wordscnt[t.id]
+        else:
+            target['word'] = t.phrase
+        target['meaning'] = t.meaning
+        target['status'] = t.status
+        target['statuslabel'] = t.status.replace(' ', '_')
+        targets.append(target)
+    if mode == 'word':
+        targets = sorted(targets, key=lambda x: x['cnt'], reverse=True)
     wordstatus = Word().status_list
 
     context = {
-        'words': words,
+        'mode': mode,
+        'words': targets,
         'wordstatus': wordstatus,
-        'count': count,
-        'max': max,
-        'active_words': True,
-        'template': 'words_list.html'
-        }
-    return render(request, './common/base.html', context)
-
-
-def phrases(request):
-    context = {
-        'template': 'words_list.html'
+        'active_' + mode + '_list': True,
+        'template': 'wordphrase_list.html'
         }
     return render(request, './common/base.html', context)
 
