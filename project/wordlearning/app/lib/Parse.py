@@ -144,6 +144,8 @@ class Parse:
             word.meaning = result['meaning']
             word.imageurl = result['imageurl']
             word.save()
+            if word.meaning == '':
+                Common.changeStatus(word=word, status='Ignore')
             for phrase in result['phrases']:
                 try:
                     Phrase.objects.get(phrase=phrase['text'])
@@ -151,9 +153,11 @@ class Parse:
                     new_phrase = Phrase()
                     new_phrase.phrase = phrase['text']
                     new_phrase.meaning = phrase['meaning']
-                    Common.changeStatus(phrase=new_phrase)
-
                     new_phrase.save()
+                    Common.changeStatus(phrase=new_phrase)
+                    if new_phrase.meaning == '':
+                        Common.changeStatus(phrase=new_phrase, status='ignore')
+
                     wordphrase = WordPhrase()
                     wordphrase.word = word
                     wordphrase.phrase = new_phrase
