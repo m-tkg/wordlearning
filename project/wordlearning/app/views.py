@@ -7,6 +7,7 @@ from app.models import WordCount
 from app.models import WordPhrase
 from app.models import WordExample
 from app.models import TestSequence
+from app.models import AnswerHistory
 from app.lib.Parse import Parse
 import urllib.parse
 import threading
@@ -283,18 +284,16 @@ def wordphraseTest(request):
         pre_question = test_seqs[index - 1]
         pre_question.answer = int(request.GET.get("answer"))
         pre_question.save()
+        answer_history = AnswerHistory()
+        if mode == 'word':
+            answer_history.word = pre_question.word
+        else:
+            answer_history.word = pre_question.phrase
+        answer_history.type = mode
+        answer_history.answer = pre_question.answer
+        answer_history.save()
     # all question answerd
     if index >= len(test_seqs):
-        for question in test_seqs:
-            if mode == 'word':
-                t = question.word
-            else:
-                t = question.phrase
-            if question.answer == 1:
-                t.answer_ok += 1
-            else:
-                t.answer_ng += 1
-            t.save()
         context = {
             'mode': mode,
             'active_' + mode + 'test': True,
