@@ -7,8 +7,10 @@ $(document).ready(function() {
         {% for status, name in wordstatus %}
             if( status == '{{ status }}' ){
                 $('#checkbox{{ forloop.counter }}').prop('checked', eval(cookie[1]))
-                if(cookie[1] == 'false')
+                if(cookie[1] == 'false'){
                     $('.class' + cookie[0]).hide();
+                    $('#checkbox{{ forloop.counter }}').parent().removeClass('active')
+                }
             }
         {% endfor %}
         if( cookie[0] == 'question_max' ){
@@ -22,7 +24,6 @@ function updatelist(status, obj) {
         document.cookie = status + '=true; path=/';
     else
         document.cookie = status + '=false; path=/';
-    updatebutton();
 }
 function updatecount(obj) {
     document.cookie = 'question_max=' + obj.value + '; path=/';
@@ -32,8 +33,12 @@ function updatecount(obj) {
     {% csrf_token %}
     <input type="number" id="max_questions" name="max_questions" min="1" max="100" value="100" onchange="updatecount(this)"/><br/>
     <input type="hidden" name="index" value="0"/>
+    <div class="btn-group" data-toggle="buttons">
     {% for status, label in wordstatus %}
-        <label class='checkbox-inline'><input type="checkbox" id='checkbox{{ forloop.counter }}' name="status" value="{{ forloop.counter }}" checked onchange="updatelist('{{ status }}', this)"><span class="label label-{{ label }}">{{ status }}</span></label>
+        <label class='btn btn-{{ label }} btn-xs active'>
+            <input type="checkbox" id='checkbox{{ forloop.counter }}' checked onchange="updatelist('{{ status }}', this)"/>{{ status }}
+        </label>
     {% endfor %}
+    </div>
     <button type="submit" class="btn btn-primary">Start</button>
 </form>

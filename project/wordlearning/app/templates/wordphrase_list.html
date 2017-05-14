@@ -49,17 +49,23 @@
             {% for status, name in wordstatus %}
                 if( status == '{{ status }}' ){
                     $('#checkbox{{ forloop.counter }}').prop('checked', eval(cookie[1]))
-                    if(cookie[1] == 'false')
+                    if(cookie[1] == 'false'){
                         $('.class' + cookie[0]).hide();
+                        $('#checkbox{{ forloop.counter }}').parent().removeClass('active');
+                    }
                 }
             {% endfor %}
         }
     }
     </script>
     <input type="hidden" name="change_status" id="change_status" value=""/>
+    <div class="btn-group" data-toggle="buttons">
     {% for status, label in wordstatus %}
-        <label class='checkbox-inline'><input type="checkbox" id='checkbox{{ forloop.counter }}' checked onchange="updatelist('{{ status }}', this)"><span class="label label-{{ label }}">{{ status }}</span></label>
+        <label class='btn btn-{{ label }} btn-xs active'>
+            <input type="checkbox" id='checkbox{{ forloop.counter }}' checked onchange="updatelist('{{ status }}', this)"/>{{ status }}
+        </label>
     {% endfor %}
+    </div>
     <div class="btn-group">
         <button type="submit" id="statusdropdown" class="btn btn-default dropdown-toggle btn-xs disabled" data-toggle="dropdown" aria-expanded="false">
             Change status
