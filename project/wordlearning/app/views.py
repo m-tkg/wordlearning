@@ -9,6 +9,7 @@ from app.models import WordExample
 from app.models import TestSequence
 from app.models import AnswerHistory
 from app.lib.Parse import Parse
+from app.lib.Common import Common
 import urllib.parse
 import threading
 from django.db.models.aggregates import Sum
@@ -73,6 +74,7 @@ def parseArticle(request):
         word.status = 'not started'
         word.word = w
         word.save()
+        Common.changeStatus(word=word)
         wordcount.article_id = article.id
         wordcount.word = word
         wordcount.count = count[w]
@@ -108,13 +110,11 @@ def wordphrasesList(request):
         if mode == 'word':
             for id in request.POST.getlist('check'):
                 word = Word.objects.get(id=id)
-                word.status = status
-                word.save()
+                Common.changeStatus(word=word, status=status)
         else:
             for id in request.POST.getlist('check'):
                 phrase = Phrase.objects.get(id=id)
-                phrase.status = status
-                phrase.save()
+                Common.changeStatus(word=phrase, status=status)
         params = ''
         if article_id != 0:
             params = "?id=" + str(article_id)

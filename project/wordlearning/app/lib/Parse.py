@@ -13,6 +13,7 @@ from app.models import WordPhrase
 from app.models import Phrase
 from app.models import Example
 from app.models import WordExample
+from app.lib.Common import Common
 
 
 class Parse:
@@ -150,6 +151,8 @@ class Parse:
                     new_phrase = Phrase()
                     new_phrase.phrase = phrase['text']
                     new_phrase.meaning = phrase['meaning']
+                    Common.changeStatus(phrase=new_phrase)
+
                     new_phrase.save()
                     wordphrase = WordPhrase()
                     wordphrase.word = word
