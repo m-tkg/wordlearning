@@ -19,13 +19,13 @@ $(document).ready(function() {
 function updatelist(status, obj) {
     status = status.replace(' ', '_')
     if(obj.checked == true)
-        document.cookie = status + '=true';
+        document.cookie = status + '=true; path=/';
     else
-        document.cookie = status + '=false';
+        document.cookie = status + '=false; path=/';
     updatebutton();
 }
 function updatecount(obj) {
-    document.cookie = 'question_max=' + obj.value;
+    document.cookie = 'question_max=' + obj.value + '; path=/';
 }
 </script>
 <form action="/{{ mode }}/test" method="POST">
