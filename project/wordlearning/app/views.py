@@ -177,18 +177,28 @@ def wordphrasesList(request):
     return render(request, './common/base.html', context)
 
 
-def wordView(request):
+def wordphraseView(request):
+    mode = request.path.split('/')[1]
     if "id" not in request.GET:
-        return redirect("app:word")
-    word = Word.objects.get(id=request.GET.get("id"))
-    phrases = WordPhrase.objects.select_related().filter(word=word)
-    examples = WordExample.objects.select_related().filter(word=word)
+        return redirect('app:' + mode + '_view')
+
+    if mode == 'word':
+        word = Word.objects.get(id=request.GET.get("id"))
+        phrases = WordPhrase.objects.select_related().filter(word=word)
+        examples = WordExample.objects.select_related().filter(word=word)
+        title = word.word
+    else:
+        word = None
+        examples = None
+        phrase = Phrase.objects.get(id=request.GET.get("id"))
+        phrases = WordPhrase.objects.select_related().filter(phrase=phrase)
+        title = phrase.phrase
     context = {
-        'title': word.word,
+        'title': title,
         'word': word,
         'phrases': phrases,
         'examples': examples,
-        'active_words': True,
+        'active_' + mode + 's': True,
         'template': './word_view.html'
         }
     return render(request, './common/base.html', context)
