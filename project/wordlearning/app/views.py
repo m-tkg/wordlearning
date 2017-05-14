@@ -91,7 +91,7 @@ def deleteArticle(request):
     return redirect("app:article_list")
 
 
-def wordphrasesList(request):
+def wordphraseList(request):
     mode = request.path.split('/')[1]
 
     article_id = 0

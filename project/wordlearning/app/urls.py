@@ -5,10 +5,10 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^article/list$', views.articleList, name='article_list'),
     url(r'^article/view$', views.articleView, name='article_view'),
-    url(r'^word/list$', views.wordphrasesList, name='word_list'),
+    url(r'^word/list$', views.wordphraseList, name='word_list'),
     url(r'^word/view$', views.wordphraseView, name='word_view'),
     url(r'^word/test$', views.wordphraseTest, name='word_test'),
-    url(r'^phrase/list$', views.wordphrasesList, name='phrase_list'),
+    url(r'^phrase/list$', views.wordphraseList, name='phrase_list'),
     url(r'^phrase/view$', views.wordphraseView, name='phrase_view'),
     url(r'^phrase/test$', views.wordphraseTest, name='phrase_test'),
 
