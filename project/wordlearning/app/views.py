@@ -146,6 +146,10 @@ def wordphraseList(request):
             targetlist = Phrase.objects.filter(query)
 
     targets = []
+    wordstatus = Word().status_list
+    status_count = {}
+    for w in wordstatus:
+        status_count[w[0]] = 0
     for t in targetlist:
         if mode == 'word' and t.id not in wordscnt:
             continue
@@ -161,15 +165,18 @@ def wordphraseList(request):
         target['status'] = t.status
         target['statuslabel'] = t.status.replace(' ', '_')
         targets.append(target)
+        status_count[t.status] += 1
     if mode == 'word':
         targets = sorted(targets, key=lambda x: x['cnt'], reverse=True)
-    wordstatus = Word().status_list
-
+    wordstatus_with_count = []
+    for i in range(len(wordstatus)):
+        wordstatus_with_count.append((wordstatus[i][0], wordstatus[i][1], status_count[wordstatus[i][0]]))
     context = {
         'mode': mode,
         'words': targets,
         'wordstatus': wordstatus,
         'article_id': article_id,
+        'wordstatus_with_count': wordstatus_with_count,
         'title': title,
         'active_' + mode + '_list': True,
         'template': 'wordphrase_list.html'

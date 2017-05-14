@@ -60,9 +60,9 @@
     </script>
     <input type="hidden" name="change_status" id="change_status" value=""/>
     <div class="btn-group" data-toggle="buttons">
-    {% for status, label in wordstatus %}
+    {% for status, label, count in wordstatus_with_count %}
         <label class='btn btn-{{ label }} btn-xs active'>
-            <input type="checkbox" id='checkbox{{ forloop.counter }}' checked onchange="updatelist('{{ status }}', this)"/>{{ status }}
+            <input type="checkbox" id='checkbox{{ forloop.counter }}' checked onchange="updatelist('{{ status }}', this)"/>{{ status }}&nbsp;({{ count }})
         </label>
     {% endfor %}
     </div>
