@@ -75,7 +75,7 @@
     <div class="btn-group" data-toggle="buttons">
     {% for status, label, count in wordstatus_with_count %}
         <label class='btn btn-{{ label }} btn-xs active'>
-            <input type="checkbox" id='checkbox{{ forloop.counter }}' checked onchange="updatelist('{{ status }}', this)"/>{{ status }}&nbsp;({{ count }})
+            <input type="checkbox" id='checkbox{{ forloop.counter }}' checked onchange="updatelist('{{ status }}', this)"/>{{ status }}&nbsp;<span class="badge">{{ count }}</span>
         </label>
     {% endfor %}
     </div>
