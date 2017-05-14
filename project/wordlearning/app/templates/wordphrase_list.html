@@ -1,9 +1,10 @@
 <h1 class="page-header">
     {% if article_id == 0 %}
-        All {{ mode }}s&nbsp;({{ words|length }})
+        All {{ mode }}s
     {% else %}
-        <a href="/article/list?id={{ article_id }}">{{ title }}</a>&nbsp;({{ words|length }})
+        <a href="/article/list?id={{ article_id }}">{{ title }}</a>
     {% endif %}
+    &nbsp;(<span id="wordcount">{{ words|length }}</span></a>)
 </h1>
 <form action="/{{ mode }}/list" method="POST" id="wordform" class="form-horizontal" role="form">
     <input type="hidden" name="id" value="{{ article_id }}"/>
@@ -23,7 +24,18 @@
         });
         applycookie();
     });
+
+    function update_count(){
+        count = 0;
+        {% for status, label, count in wordstatus_with_count %}
+        if( $('#checkbox{{ forloop.counter }}').prop('checked') )
+            count += {{ count }};
+        {% endfor %}
+        $('#wordcount').text('' + count)
+    }
+
     function updatelist(status, obj) {
+        update_count();
         status = status.replace(' ', '_')
         if(obj.checked == true){
             document.cookie = status + '=true; path=/';
@@ -56,6 +68,7 @@
                 }
             {% endfor %}
         }
+        update_count();
     }
     </script>
     <input type="hidden" name="change_status" id="change_status" value=""/>
