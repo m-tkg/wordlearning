@@ -87,7 +87,7 @@
                     {% if word.meaning == '' %}
                     {{ word.word }}
                     {% else %}
-                    <a href="/word/view?id={{ word.id }}">{{ word.word }}</a>
+                    <a href="/{{ mode }}/view?id={{ word.id }}">{{ word.word }}</a>
                     {% endif %}
                     {% if word.imageurl %}
                     <span class="glyphicon glyphicon-picture"></span>
