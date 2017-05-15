@@ -36,7 +36,7 @@ function updatecount(obj) {
     <div class="btn-group" data-toggle="buttons">
     {% for status, label in wordstatus %}
         <label class='btn btn-{{ label }} btn-xs active'>
-            <input type="checkbox" id='checkbox{{ forloop.counter }}' checked onchange="updatelist('{{ status }}', this)"/>{{ status }}
+            <input type="checkbox" id='checkbox{{ forloop.counter }}' name="status" value="{{ forloop.counter }}" checked onchange="updatelist('{{ status }}', this)"/>{{ status }}
         </label>
     {% endfor %}
     </div>
