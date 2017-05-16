@@ -306,6 +306,9 @@ def wordphraseTest(request):
             answer_history.word = pre_question.word
         else:
             answer_history.word = pre_question.phrase
+        if answer_history.word.status == 'not started':
+            answer_history.word.status = 'studying'
+            answer_history.word.save()
         answer_history.type = mode
         answer_history.answer = pre_question.answer
         answer_history.save()
