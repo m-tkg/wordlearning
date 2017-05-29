@@ -67,13 +67,13 @@ def parseArticle(request):
             word = Word.objects.get(word=w)
         except:
             word = Word()
+            word.status = 'not started'
+            word.word = w
+            word.save()
         try:
             wordcount = WordCount.objects.get(article_id=article.id, word=word.id)
         except:
             wordcount = WordCount()
-        word.status = 'not started'
-        word.word = w
-        word.save()
         Common.changeStatus(word=word)
         wordcount.article_id = article.id
         wordcount.word = word
